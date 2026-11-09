@@ -1,5 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useState } from 'react';
 import { Link, useBeforeUnload, useBlocker, useParams } from 'react-router';
+import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 import {
   type RadarCollectionMatch,
   type RadarMinimumCondition,
@@ -254,7 +255,7 @@ function RadarReleaseDetail() {
   }
 
   const releaseKey = release.id ?? release.release_id ?? 0;
-  const displayCurrency = release.display_currency || 'EUR';
+  const displayCurrency = release.display_currency || DEFAULT_DISPLAY_CURRENCY;
   const collectionMatch = release.opportunity.collection_match;
   const stateLabelKeys = getRadarStateLabelKeys(release);
   const saveStatus = getRadarSaveStatus({ saving, saveFailed, hasUnsavedChanges });

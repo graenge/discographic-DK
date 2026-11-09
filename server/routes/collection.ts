@@ -8,6 +8,7 @@ import { createUserJobScope } from '../services/userJobs.js';
 import db, { getCollectionFieldMap, getCollectionFolders, getSettingForUser, hasStoredCollectionFieldMap, hydrateRelease, parseJson, setCollectionFieldMap, setCollectionFolders, stringifyJson } from '../db.js';
 import { getDiscogsClientForUser, requireAuth } from '../middleware/auth.js';
 import { DEFAULT_CURRENCY, convertAmountWithRates, convertReleasePrices, getExchangeSnapshot, normalizeCurrency } from '../services/exchangeRates.js';
+import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 import { MARKETPLACE_STATUS } from '../../shared/contracts/marketplace.js';
 import {
   normalizeCollectionRelease,
@@ -82,7 +83,7 @@ function getFilterOptions(userId: number) {
 }
 
 function getDisplayCurrency(req: Request) {
-  return normalizeCurrency(req.query.currency || getSettingForUser(req.session.userId!, 'currency', DEFAULT_CURRENCY));
+  return normalizeCurrency(req.query.currency || getSettingForUser(req.session.userId!, 'currency', DEFAULT_DISPLAY_CURRENCY));
 }
 
 async function convertHydratedRelease(req: Request, release: ReleaseRow, normalizeRelease: (value: unknown) => unknown = normalizeCollectionRelease) {

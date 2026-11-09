@@ -2,7 +2,7 @@ import { Link } from 'react-router';
 import { memo, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { getMarketplaceStatusLabelKey, hasPricedMarketplaceValue } from '../../shared/contracts/marketplace.js';
 import type { CollectionRelease } from '../../shared/contracts/release.js';
-import type { Currency } from '../../shared/currency.js';
+import { DEFAULT_DISPLAY_CURRENCY, type Currency } from '../../shared/currency.js';
 import { formatCompactNumber, formatCurrency, joinNames } from '../lib/format';
 import { useI18n } from '../lib/I18nContext';
 import { COLUMNS, type ColumnId } from '../lib/columns';
@@ -199,7 +199,7 @@ function CollectionTable({
   onSort,
   onUpdate,
   visibleColumns,
-  currency = 'EUR',
+  currency = DEFAULT_DISPLAY_CURRENCY,
 }: {
   releases: CollectionRelease[];
   sortBy: TableSortColumn;

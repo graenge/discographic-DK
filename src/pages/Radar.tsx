@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router';
+import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 import {
   RADAR_PRIORITY,
   RADAR_SOURCE_STATUS,
@@ -286,7 +287,7 @@ function getRadarMinimumCondition(item: RadarRelease, t: Translate): string {
 }
 
 function getRadarReleaseFields(item: RadarRelease, t: Translate): RadarReleaseField[] {
-  const displayCurrency = item.display_currency || 'EUR';
+  const displayCurrency = item.display_currency || DEFAULT_DISPLAY_CURRENCY;
   const targetPrice = item.local.target_price == null
     ? '-'
     : formatCurrency(item.local.target_price, displayCurrency);

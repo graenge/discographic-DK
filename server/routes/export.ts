@@ -4,9 +4,10 @@ import express, { type Request } from 'express';
 import { record } from '../discogsPagination.js';
 import { stringify } from 'csv-stringify/sync';
 import * as XLSX from 'xlsx';
-import db, { getCollectionFieldMap, hydrateRelease } from '../db.js';
+import db, { getCollectionFieldMap, getSettingForUser, hydrateRelease } from '../db.js';
 import { requireAuth } from '../middleware/auth.js';
 import { DEFAULT_CURRENCY, convertAmountWithRates, getExchangeSnapshot, normalizeCurrency } from '../services/exchangeRates.js';
+import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 import { buildReleaseFilterWhere } from '../services/releaseFilters.js';
 
 const router = express.Router();
@@ -58,7 +59,7 @@ router.get('/', async (req, res) => {
     // The file type travels as `type`: `format` is the collection filter (Vinyl, CD...), and sharing the
     // name made filtered exports ignore the chosen file type.
     const format = req.query.type === 'xlsx' ? 'xlsx' : 'csv';
-    const currency = normalizeCurrency(req.query.currency || DEFAULT_CURRENCY);
+    const currency = normalizeCurrency(req.query.currency || getSettingForUser(req.session.userId!, 'currency', DEFAULT_DISPLAY_CURRENCY));
     const { clause, params } = buildReleaseFilterWhere({
       userId: req.session.userId!,
       filters: req.query,

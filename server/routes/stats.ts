@@ -5,6 +5,7 @@ import { errorMessage } from '../services/errors.js';
 import express from 'express';
 import db, { getCollectionFieldMap, getCollectionFolders, getRadarForUser, getSettingForUser } from '../db.js';
 import { DEFAULT_CURRENCY, convertAmount, convertAmountWithRates, getExchangeSnapshot, normalizeCurrency } from '../services/exchangeRates.js';
+import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 import { getCollectionValueHistory, recordCollectionValue } from '../services/collectionValue.js';
 import { getDiscogsClientForUser, requireAuth } from '../middleware/auth.js';
 import { normalizeDashboardStats } from '../../shared/contracts/dashboardStats.js';
@@ -159,7 +160,7 @@ router.post('/collection-value', async (req, res) => {
 router.get('/', async (req, res) => {
   try {
     const userId = req.session.userId!;
-    const displayCurrency = normalizeCurrency(req.query.currency || getSettingForUser(userId, 'currency', DEFAULT_CURRENCY));
+    const displayCurrency = normalizeCurrency(req.query.currency || getSettingForUser(userId, 'currency', DEFAULT_DISPLAY_CURRENCY));
     const radar = getRadarForUser(userId);
     const totalRecords = db.prepare<unknown[], CountRow>('SELECT COUNT(*) AS count FROM releases WHERE user_id = ?').get(userId)!.count;
     const ratedRecords = db.prepare<unknown[], CountRow>('SELECT COUNT(*) AS count FROM releases WHERE user_id = ? AND rating > 0').get(userId)!.count;

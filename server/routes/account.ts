@@ -4,7 +4,7 @@ import { normalizeAccountResponse } from '../../shared/contracts/account.js';
 import { clearUserCollectionData, getDiscogsAccount, getSettingForUser, setSettingForUser, upsertDiscogsAccount } from '../db.js';
 import { USER_PREFERENCE_KEYS } from '../../shared/contracts/preferences.js';
 import { requireAuth } from '../middleware/auth.js';
-import { normalizeCurrency } from '../../shared/currency.js';
+import { DEFAULT_DISPLAY_CURRENCY, normalizeCurrency } from '../../shared/currency.js';
 
 const router = express.Router();
 
@@ -24,7 +24,7 @@ function serializeAccount(account: ReturnType<typeof getDiscogsAccount>, userId:
     discogsUsername: account?.discogs_username || '',
     tokenConfigured: Boolean(account?.discogs_token),
     tokenPreview: account?.discogs_token ? maskToken(account.discogs_token) : null,
-    currency: normalizeCurrency(getSettingForUser(userId, 'currency', 'DKK'))
+    currency: normalizeCurrency(getSettingForUser(userId, 'currency', DEFAULT_DISPLAY_CURRENCY))
   });
 }
 

@@ -1,10 +1,12 @@
 import { getCurrentLocale } from '../../shared/i18n.js';
+import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 
 export type NameEntry = string | { name?: string | null } | null | undefined;
 
-export function formatCurrency(value: number | string | null | undefined, currency = 'EUR') {
+export function formatCurrency(value: number | string | null | undefined, currency: string = DEFAULT_DISPLAY_CURRENCY) {
   const locale = getCurrentLocale();
-  return new Intl.NumberFormat(locale === 'en' ? 'en-GB' : 'es-ES', {
+  const numberLocale = currency === 'DKK' ? 'da-DK' : locale === 'en' ? 'en-GB' : 'es-ES';
+  return new Intl.NumberFormat(numberLocale, {
     style: 'currency',
     currency,
     minimumFractionDigits: 2,

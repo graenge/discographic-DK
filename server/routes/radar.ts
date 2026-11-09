@@ -15,6 +15,7 @@ import {
   type RadarWantlistTemplateFormat,
 } from '../../shared/contracts/radar.js';
 import db, { getRadarForUser, getSettingForUser, updateRadarReleaseForUser } from '../db.js';
+import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 import { getDiscogsClientForUser, requireAuth } from '../middleware/auth.js';
 import {
   DEFAULT_CURRENCY,
@@ -164,7 +165,7 @@ function parseRadarId(value: unknown): number | null {
 }
 
 function getDisplayCurrency(userId: number): string {
-  return normalizeCurrency(getSettingForUser(userId, 'currency') ?? DEFAULT_CURRENCY);
+  return normalizeCurrency(getSettingForUser(userId, 'currency') ?? DEFAULT_DISPLAY_CURRENCY);
 }
 
 async function getDisplayRates(displayCurrency: string): Promise<ExchangeRates> {

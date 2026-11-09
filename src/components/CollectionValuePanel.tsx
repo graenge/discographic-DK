@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Area, AreaChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 import type { DashboardCollectionValue } from '../../shared/contracts/dashboardStats.js';
+import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 import { api } from '../lib/api';
 import { getErrorMessage } from '../lib/errors';
 import { formatCurrency } from '../lib/format';
@@ -16,7 +17,7 @@ function CollectionValuePanel({ value, onUpdated }: { value: DashboardCollection
   const { t, locale } = useI18n();
   const toast = useToast();
   const [refreshing, setRefreshing] = useState(false);
-  const currency = value.currency || 'EUR';
+  const currency = value.currency || DEFAULT_DISPLAY_CURRENCY;
   const latest = value.history[value.history.length - 1] ?? null;
   const first = value.history[0] ?? null;
   const change = latest?.median != null && first?.median != null && value.history.length > 1 ? latest.median - first.median : null;

@@ -28,7 +28,7 @@ import {
   normalizeCollectionSavedView,
   normalizeCollectionSavedViews
 } from '../../shared/contracts/collectionViews.js';
-import { DEFAULT_CURRENCY, SUPPORTED_CURRENCIES, type Currency } from '../../shared/currency.js';
+import { DEFAULT_DISPLAY_CURRENCY, SUPPORTED_CURRENCIES, type Currency } from '../../shared/currency.js';
 import type { CollectionPageResponse, FilterKey, UpdateReleasePatch } from '../lib/types';
 
 type ViewMode = 'grid' | 'table';
@@ -109,7 +109,7 @@ function Collection() {
   const [importOpen, setImportOpen] = useState(false);
   const [payload, setPayload] = useState<CollectionPageResponse>({
     releases: [],
-    displayCurrency: DEFAULT_CURRENCY,
+    displayCurrency: DEFAULT_DISPLAY_CURRENCY,
     pagination: {
       page: 1,
       limit: 20,
@@ -131,10 +131,10 @@ function Collection() {
   const [selectedSavedViewId, setSelectedSavedViewId] = useState('');
   const saveColumnsTimer = useRef<ReturnType<typeof window.setTimeout> | null>(null);
   const collectionLoadSequence = useRef(0);
-  const [displayCurrency, setDisplayCurrency] = useState<Currency>(currency || DEFAULT_CURRENCY);
+  const [displayCurrency, setDisplayCurrency] = useState<Currency>(currency || DEFAULT_DISPLAY_CURRENCY);
 
   useEffect(() => {
-    setDisplayCurrency(currency || DEFAULT_CURRENCY);
+    setDisplayCurrency(currency || DEFAULT_DISPLAY_CURRENCY);
   }, [currency]);
 
   const load = useCallback(async (

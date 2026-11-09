@@ -12,6 +12,7 @@ vi.mock("ecb-exchange-rates-ts", () => ({
 }));
 
 import { DEFAULT_CURRENCY, convertAmountWithRates, normalizeCurrency } from "../server/services/exchangeRates.js";
+import { DEFAULT_DISPLAY_CURRENCY } from "../shared/currency.js";
 
 const rates = { EUR: 1, USD: 1.1, GBP: 0.85, DKK: 7.45 };
 
@@ -20,6 +21,11 @@ describe("exchange rate helpers", () => {
     expect(normalizeCurrency("usd")).toBe("USD");
     expect(normalizeCurrency("cad")).toBe("DKK");
     expect(normalizeCurrency(null)).toBe("DKK");
+  });
+
+  it("uses DKK as the display default while EUR remains the calculation base", () => {
+    expect(DEFAULT_DISPLAY_CURRENCY).toBe("DKK");
+    expect(DEFAULT_CURRENCY).toBe("EUR");
   });
 
   it("converts EUR into USD", () => {
