@@ -4,7 +4,7 @@ import {
   normalizeAccountState,
   normalizeAuthStatus
 } from '../shared/contracts/account.js';
-import { DEFAULT_CURRENCY } from '../shared/currency.js';
+import { DEFAULT_DISPLAY_CURRENCY } from '../shared/currency.js';
 
 const user = {
   id: '3',
@@ -31,7 +31,7 @@ describe('account contract', () => {
         tokenPreview: null
       },
       preferences: {
-        currency: DEFAULT_CURRENCY
+        currency: DEFAULT_DISPLAY_CURRENCY
       },
       capabilities: {
         canUseCollection: false,
@@ -101,7 +101,7 @@ describe('account contract', () => {
       tokenConfigured: null,
       tokenPreview: null
     });
-    expect(state.preferences.currency).toBe(DEFAULT_CURRENCY);
+    expect(state.preferences.currency).toBe(DEFAULT_DISPLAY_CURRENCY);
     expect(state.capabilities.canUseCollection).toBe(false);
     expect(state.capabilities.canUseRadar).toBe(false);
     expect(state.capabilities.canManageAccount).toBe(false);

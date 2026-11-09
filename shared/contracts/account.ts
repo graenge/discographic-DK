@@ -1,17 +1,23 @@
-import { DEFAULT_CURRENCY, normalizeCurrency, type Currency } from '../currency.js';
+import { DEFAULT_DISPLAY_CURRENCY, normalizeCurrency, type Currency } from "../currency.js";
 
 type UnknownRecord = Record<string, unknown>;
-type AuthPayload = {
-  needsBootstrap?: unknown;
-  loggedIn?: unknown;
-  user?: unknown;
-} | null | undefined;
-type AccountPayload = {
-  discogsUsername?: unknown;
-  tokenConfigured?: unknown;
-  tokenPreview?: unknown;
-  currency?: unknown;
-} | null | undefined;
+type AuthPayload =
+  | {
+      needsBootstrap?: unknown;
+      loggedIn?: unknown;
+      user?: unknown;
+    }
+  | null
+  | undefined;
+type AccountPayload =
+  | {
+      discogsUsername?: unknown;
+      tokenConfigured?: unknown;
+      tokenPreview?: unknown;
+      currency?: unknown;
+    }
+  | null
+  | undefined;
 
 export type NormalizedUser = {
   id: number;
@@ -65,7 +71,7 @@ function asBoolean(value: unknown): boolean {
 }
 
 function asNumber(value: unknown, fallback: number | null = null): number | null {
-  if (value == null || value === '') {
+  if (value == null || value === "") {
     return fallback;
   }
 
@@ -73,19 +79,17 @@ function asNumber(value: unknown, fallback: number | null = null): number | null
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
-function asText(value: unknown, fallback = ''): string {
-  return typeof value === 'string' ? value : fallback;
+function asText(value: unknown, fallback = ""): string {
+  return typeof value === "string" ? value : fallback;
 }
 
 function asNullableText(value: unknown): string | null {
-  const text = typeof value === 'string' ? value.trim() : '';
+  const text = typeof value === "string" ? value.trim() : "";
   return text || null;
 }
 
 function asRecord(value: unknown): UnknownRecord | null {
-  return value && typeof value === 'object' && !Array.isArray(value)
-    ? (value as UnknownRecord)
-    : null;
+  return value && typeof value === "object" && !Array.isArray(value) ? (value as UnknownRecord) : null;
 }
 
 export function normalizeUser(user: unknown): NormalizedUser | null {
@@ -102,7 +106,7 @@ export function normalizeUser(user: unknown): NormalizedUser | null {
   return {
     id,
     username: asText(record.username),
-    role: asText(record.role, 'user') || 'user',
+    role: asText(record.role, "user") || "user",
     created_at: asNullableText(record.created_at)
   };
 }
@@ -133,7 +137,7 @@ function buildCapabilities({
   loggedIn,
   isAdmin,
   tokenConfigured,
-  accountUnavailable,
+  accountUnavailable
 }: {
   loggedIn: boolean;
   isAdmin: boolean;
@@ -157,7 +161,7 @@ function buildCapabilities({
 export function normalizeAccountState({
   auth = {},
   account = null,
-  accountUnavailable = false,
+  accountUnavailable = false
 }: {
   auth?: AuthPayload;
   account?: AccountPayload;
@@ -166,7 +170,7 @@ export function normalizeAccountState({
   const authStatus = normalizeAuthStatus(auth);
   const user = authStatus.user;
   const loggedIn = authStatus.loggedIn;
-  const isAdmin = user?.role === 'admin';
+  const isAdmin = user?.role === "admin";
 
   if (!loggedIn) {
     return {
@@ -181,7 +185,7 @@ export function normalizeAccountState({
         tokenPreview: null
       },
       preferences: {
-        currency: DEFAULT_CURRENCY
+        currency: DEFAULT_DISPLAY_CURRENCY
       },
       capabilities: buildCapabilities({
         loggedIn: false,
@@ -205,7 +209,7 @@ export function normalizeAccountState({
         tokenPreview: null
       },
       preferences: {
-        currency: DEFAULT_CURRENCY
+        currency: DEFAULT_DISPLAY_CURRENCY
       },
       capabilities: buildCapabilities({
         loggedIn: true,

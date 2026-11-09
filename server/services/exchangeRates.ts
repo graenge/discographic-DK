@@ -11,7 +11,11 @@ const CACHE_TTL_MS = 6 * 60 * 60 * 1000;
 const DEGRADED_CACHE_TTL_MS = 5 * 60 * 1000;
 // Approximate rates for the supported display currencies, used only when the ECB is unreachable
 // so the UI keeps rendering. Other currencies are left missing rather than guessed.
-const DISPLAY_FALLBACK_RATES: RateMap = { USD: 1.1, GBP: 0.85 };
+const DISPLAY_FALLBACK_RATES: RateMap = {
+  USD: 1.1,
+  GBP: 0.85,
+  DKK: 7.46
+};
 
 type RateMap = Record<string, number | null | undefined>;
 type ExchangeSnapshot = {

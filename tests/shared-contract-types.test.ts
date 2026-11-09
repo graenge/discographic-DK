@@ -1,6 +1,6 @@
 import { describe, expect, it, expectTypeOf } from 'vitest';
 import { createCollectionFilters, type CollectionFilters } from '../shared/collectionFilters.js';
-import { DEFAULT_CURRENCY, normalizeCurrency, type Currency } from '../shared/currency.js';
+import { DEFAULT_DISPLAY_CURRENCY, normalizeCurrency, type Currency } from '../shared/currency.js';
 import {
   normalizeAccountState,
   type AccountState,
@@ -102,7 +102,7 @@ describe('shared contract types', () => {
 
     expect(filters.search).toBe('Theo');
     expect(currency).toBe('USD');
-    expect(accountState.preferences.currency).toBe(DEFAULT_CURRENCY);
+    expect(accountState.preferences.currency).toBe(DEFAULT_DISPLAY_CURRENCY);
     expect(savedView?.id).toBe('techno');
     expect(dashboardStats.genres).toEqual([]);
     expect(marketplaceStatus).toBe('pending');

@@ -68,7 +68,8 @@ function buildSearchParams(filters: CollectionFilters, sortBy: TableSortColumn, 
 const CURRENCY_LABELS = {
   EUR: 'EUR · €',
   USD: 'USD · $',
-  GBP: 'GBP · £'
+  GBP: 'GBP · £',
+  DKK: 'DKK · kr.'
 };
 
 function createSavedViewId(name: string, existingViews: CollectionSavedView[]): string {

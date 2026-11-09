@@ -24,7 +24,7 @@ function serializeAccount(account: ReturnType<typeof getDiscogsAccount>, userId:
     discogsUsername: account?.discogs_username || '',
     tokenConfigured: Boolean(account?.discogs_token),
     tokenPreview: account?.discogs_token ? maskToken(account.discogs_token) : null,
-    currency: normalizeCurrency(getSettingForUser(userId, 'currency', 'EUR'))
+    currency: normalizeCurrency(getSettingForUser(userId, 'currency', 'DKK'))
   });
 }
 
