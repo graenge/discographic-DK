@@ -202,7 +202,7 @@ export function normalizeSyncStatus(payload: UnknownRecord = {}): SyncStatusStat
   const total = asNumber(payload?.total);
 
   return {
-    locale: asText(payload?.locale, 'es') || 'es',
+    locale: asText(payload?.locale, 'da') || 'da',
     status,
     phase: asText(payload?.phase, status === SYNC_STATUS.FAILED ? 'error' : SYNC_STATUS.IDLE),
     current,
@@ -229,7 +229,7 @@ export function normalizeImportSyncState(payload: UnknownRecord = {}): ImportSyn
     .filter((failure): failure is ImportFailure => Boolean(failure));
 
   return {
-    locale: asText(payload?.locale, 'es') || 'es',
+    locale: asText(payload?.locale, 'da') || 'da',
     status,
     current,
     total,

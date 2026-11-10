@@ -1,7 +1,7 @@
 import type { DashboardStats } from '../../shared/contracts/dashboardStats.js';
 import type { AchievementSet, HiddenAchievement, TieredAchievement, Translate } from './types';
 
-type AchievementLocale = 'es' | 'en';
+type AchievementLocale = 'es' | 'en' | 'da';
 
 type TierDefinition = {
   label: string;
@@ -133,6 +133,62 @@ const ACHIEVEMENT_COPY = {
       soundAtlas: ['Sound atlas', 'You cross decades, styles, and labels at once. The collection now feels more like musical geography than isolated impulse.'],
       totalControl: ['Total control', 'Ratings, notes, and prices are all moving together. This is no longer just collecting; it is archive governance.']
     }
+  },
+  da: {
+    tiered: {
+      collector: {
+        title: 'Samler i fremgang',
+        description: 'Du samler ikke bare plader; du bygger en samling med tyngde, fra de første kasser til reoler, der allerede gør indtryk.',
+        tiers: ['De første skridt', 'Stor fremgang', 'Seriøs samling', 'Ihærdig arkivar', 'Reolmonster', 'Legendarisk Discographic-samler']
+      },
+      notes: {
+        title: 'Omslagskrønikeskriver',
+        description: 'Hvert notat tilføjer kontekst, minder og forklaringer. Du gør lagerlisten til et personligt arkiv.',
+        tiers: ['De første skridt', 'Stor fremgang', 'Mesterarkiv', 'Ihærdig notatskriver', 'Total hukommelse']
+      },
+      ratings: {
+        title: 'Kritisk lytter',
+        description: 'Stjernerne er ikke bare formalitet: De skiller fyld fra favoritter og viser, hvad der fortjener en tur mere på pladespilleren.',
+        tiers: ['De første skridt', 'Stor fremgang', 'Overdommer', 'Professionel kritiker', 'Den endelige kanon']
+      },
+      market: {
+        title: 'Markedsradar',
+        description: 'Det er ikke nok at eje pladerne; du følger også deres markedsværdi. Samlingen er både arkiv og aktiv.',
+        tiers: ['De første skridt', 'Stor fremgang', 'Styr på markedet', 'Vurderingsbord', 'Levende markedstermometer']
+      },
+      timeline: {
+        title: 'Tidsrejsende',
+        description: 'Dine reoler bevæger sig målrettet gennem årtierne. De ligner efterhånden et tidskort over dine musikalske besættelser.',
+        tiers: ['De første skridt', 'Stor fremgang', 'Personligt museum', 'Tidsarkivar']
+      },
+      styles: {
+        title: 'Stilskifter',
+        description: 'Du springer ubesværet mellem genrer. Samlingen bliver mere farverig, fordi din smag ikke lader sig sætte i én bås.',
+        tiers: ['De første skridt', 'Stor fremgang', 'Alsidig lytter', 'Lydmæssig kimære']
+      }
+    },
+    hidden: {
+      earlyBird: ['Tidlig kassejæger', 'Du har plader fra mindst tre årtier, selv om samlingen stadig er lille. Du begyndte med at forfine smagen før antallet.'],
+      wall: ['Pladevæggen', 'Din mest hyppige kunstner fylder så meget, at vedkommende næsten har fået sin egen væg i samlingen.'],
+      fearless: ['Modig musiksmag', 'Du bevæger dig gennem mindst 15 genrer uden tøven. Din samling kender ingen trygge grænser.'],
+      marker: ['Notatnørd', 'Du har skrevet så meget om dine plader, at hvert omslag bærer et ekstra lag af personlige minder.'],
+      appraiser: ['Gangens vurderingsmand', 'Du kender prisen på en stor del af samlingen. Du lytter til pladerne og holder også øje med værdien.'],
+      label: ['Pladeselskabets stamkunde', 'Et pladeselskab dukker så ofte op, at det føles som et fast forhold frem for et tilfælde.'],
+      loop: ['Uendelig gentagelse', 'Én genre dominerer og trækker igen og igen hele reolen ind i sin bane.'],
+      blackBox: ['Den sorte boks', 'Du har bedømt så mange plader, at din smag næsten fungerer som et selvstændigt system. Neutraliteten er for længst væk.'],
+      archivedBooth: ['Arkiveret lyttebås', 'Notater og bedømmelser hober sig op. Samlingen ligner efterhånden en veldokumenteret lyttebås.'],
+      marathon: ['Vinylmaratonløber', 'Din tidslinje over nye plader har sæsoner, afsnit og kontinuitet. Det her er ikke længere en kort fase.'],
+      showcase: ['Samlerens udstillingsvindue', 'En stor del af samlingen er vurderet. Dit arkiv er både udstilling og regnskab.'],
+      balance: ['Balancekunstner', 'Du holder en stor samling i vækst uden at glemme dokumentationen. Omfanget går ikke ud over detaljerne.'],
+      terminal: ['Samler for livet', 'Du er nået op i firecifret antal. Nu besøger du ikke længere hobbyen; du bor i den.'],
+      curve: ['Stejl vækstkurve', 'Samlingen vokser alt for regelmæssigt til at være et tilfælde. Her er både metode, appetit og gentagelse.'],
+      altar: ['Privat alter', 'Én kunstner fylder så meget, at samlingen nærmest har bygget et lille hjemmealter.'],
+      commentedSleeves: ['Kommenterede omslag', 'Ingen plader står uden kontekst: Hele samlingen bærer nu dine noter, som om hver plade kom med sit eget hæfte.'],
+      finalVerdict: ['Den endelige dom', 'Alt i samlingen kommer forbi din dommerstol. Ikke en eneste plade står uden stjerner og bedømmelse.'],
+      pricedInventory: ['Vurderet lager', 'Hele samlingen taler nu i tal. Hver plade har en pris og sin plads i husholdningsregnskabet.'],
+      soundAtlas: ['Lydatlas', 'Du spænder over årtier, genrer og pladeselskaber på én gang. Samlingen er blevet et musikalsk landkort.'],
+      totalControl: ['Fuld kontrol', 'Bedømmelser, noter og priser følges ad. Det her er ikke længere bare samleri; det er arkivstyring.']
+    }
   }
 };
 
@@ -197,12 +253,12 @@ function createHiddenAchievement(
   };
 }
 
-export function buildAchievements(stats: DashboardStats | null, t: Translate, locale: AchievementLocale = 'es'): AchievementSet {
+export function buildAchievements(stats: DashboardStats | null, t: Translate, locale: AchievementLocale = 'da'): AchievementSet {
   if (!stats) {
     return { tiered: [], hidden: [] };
   }
 
-  const copy = ACHIEVEMENT_COPY[locale] || ACHIEVEMENT_COPY.es;
+  const copy = ACHIEVEMENT_COPY[locale] || ACHIEVEMENT_COPY.da;
 
   const totals = stats.totals || {};
   const totalRecords = totals.total_records || 0;

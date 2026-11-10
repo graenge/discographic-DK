@@ -4,12 +4,14 @@ import type { DashboardStats } from '../../shared/contracts/dashboardStats.js';
 import { useAuth } from './AuthContext';
 import { api } from './api';
 import { getErrorMessage } from './errors';
+import { useI18n } from './I18nContext';
 import type { ChildrenProp, DashboardStatsContextValue } from './types';
 
 const DashboardStatsContext = createContext<DashboardStatsContextValue | null>(null);
 
 export function DashboardStatsProvider({ children }: ChildrenProp) {
   const { accountUnavailable, discogsConfigured } = useAuth();
+  const { t } = useI18n();
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
@@ -31,12 +33,12 @@ export function DashboardStatsProvider({ children }: ChildrenProp) {
       return payload;
     } catch (nextError) {
       setStats(null);
-      setError(new Error(getErrorMessage(nextError)));
+      setError(new Error(getErrorMessage(nextError, t('client.networkError'))));
       return null;
     } finally {
       setLoading(false);
     }
-  }, [accountUnavailable, discogsConfigured]);
+  }, [accountUnavailable, discogsConfigured, t]);
 
   useEffect(() => {
     void refresh();

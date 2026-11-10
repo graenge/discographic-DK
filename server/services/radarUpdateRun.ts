@@ -7,7 +7,7 @@ import {
   type RadarSyncResult,
   type RadarUpdateRunStatus,
 } from '../../shared/contracts/radar.js';
-import { translate } from '../../shared/i18n.js';
+import { DEFAULT_LOCALE, translate } from '../../shared/i18n.js';
 import {
   clearRadarUpdateRunRunning,
   getRadarUpdateRunState,
@@ -30,7 +30,7 @@ type RadarUpdateRunInput = {
 };
 
 function radarT(locale: string | undefined, key: string, vars?: Record<string, string | number>): string {
-  return translate(locale || 'es', key, vars);
+  return translate(locale || DEFAULT_LOCALE, key, vars);
 }
 
 function createEmptyWantlistResult(): RadarSyncResult {

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useSearchParams, useNavigate } from 'react-router';
 import { api } from '../lib/api';
 import { useI18n } from '../lib/I18nContext';
+import { getIntlLocale } from '../../shared/i18n.js';
 import { useToast } from '../lib/ToastContext';
 import { getErrorMessage } from '../lib/errors';
 import { joinNames } from '../lib/format';
@@ -15,7 +16,7 @@ const PRINT_PAGE_SIZE = 100;
 export default function PrintCatalog() {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const toast = useToast();
   const [releases, setReleases] = useState<CollectionRelease[]>([]);
   const [loading, setLoading] = useState(true);
@@ -79,7 +80,7 @@ export default function PrintCatalog() {
     );
   }
 
-  const currentDate = new Date().toLocaleDateString();
+  const currentDate = new Intl.DateTimeFormat(getIntlLocale(locale), { dateStyle: 'short' }).format(new Date());
 
   return (
     <div className="min-h-screen bg-white p-8 text-slate-900 font-sans print:p-0">

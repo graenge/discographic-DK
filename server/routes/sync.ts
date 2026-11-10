@@ -1,6 +1,6 @@
 import type { DiscogsClient } from '../discogs.js';
 import type { UserJobScope } from '../services/userJobs.js';
-import type { TranslationVars } from '../../shared/i18n.js';
+import { DEFAULT_LOCALE, translate, type TranslationVars } from '../../shared/i18n.js';
 import type { SyncStatusState, ProgressWorkflow, EnrichmentWorkflow } from '../../shared/contracts/syncStatus.js';
 import { record } from '../discogsPagination.js';
 
@@ -13,7 +13,6 @@ import { recordCollectionValue } from '../services/collectionValue.js';
 import { buildCommunityUpdate, getCommunityBackfillCount, getCommunityBackfillRows } from '../services/communityStats.js';
 import { getDiscogsClientForUser, requireAuth } from '../middleware/auth.js';
 import { ensureCachedCover, removeCachedCovers } from '../services/coverMedia.js';
-import { translate } from '../../shared/i18n.js';
 import { DEFAULT_CURRENCY, convertAmountWithRates, getExchangeSnapshot } from '../services/exchangeRates.js';
 import { pruneUnseenReleases } from '../services/collectionReconcile.js';
 import { ENRICH_CONDITION, getPendingEnrichmentCount, getPendingEnrichmentRows } from '../services/enrichmentQueue.js';
@@ -74,10 +73,10 @@ registerUserJobCanceller((userId) => {
 router.use(requireAuth);
 
 function syncT(locale: string, key: string, vars?: TranslationVars) {
-  return translate(locale || 'es', key, vars);
+  return translate(locale || DEFAULT_LOCALE, key, vars);
 }
 
-function getSyncState(userId: number, locale = 'es') {
+function getSyncState(userId: number, locale: string = DEFAULT_LOCALE) {
   if (!syncStates.has(userId)) {
     syncStates.set(userId, {
       locale,
@@ -390,7 +389,7 @@ async function syncInventory({ userId, discogs, run }: RunInput) {
 }
 
 async function warmupThumbnails(userId: number, run: UserJobScope) {
-  const { locale = 'es' } = getSyncState(userId);
+  const { locale = DEFAULT_LOCALE } = getSyncState(userId);
   const rows = db.prepare<unknown[], Pick<ReleaseRow, 'id' | 'cover_url'>>(`
     SELECT id, cover_url
     FROM releases
@@ -479,7 +478,7 @@ const updateEnrichedRelease = db.prepare(`
 `);
 
 async function runEnrichAll({ userId, discogs, run }: RunInput) {
-  const { locale = 'es' } = getSyncState(userId);
+  const { locale = DEFAULT_LOCALE } = getSyncState(userId);
 
   try {
     const pendingRows = getPendingEnrichmentRows(db, userId);

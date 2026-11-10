@@ -1,6 +1,6 @@
 import { record } from '../discogsPagination.js';
 import type { Request } from 'express';
-import type { TranslationVars } from '../../shared/i18n.js';
+import { DEFAULT_LOCALE, translate, type TranslationVars } from '../../shared/i18n.js';
 import type { ImportFailure } from '../../shared/contracts/syncStatus.js';
 import type { ImportSyncProgress } from '../services/importSync.js';
 import type { UserJobScope } from '../services/userJobs.js';
@@ -25,7 +25,6 @@ import {
   summarizeInterruptedImportSync
 } from '../services/importSync.js';
 import { getNoteFieldText, notesToText, parseStoredNotes, replaceNoteText } from '../services/notes.js';
-import { translate } from '../../shared/i18n.js';
 import { normalizeImportSyncState } from '../../shared/contracts/syncStatus.js';
 import { pendingImportCounts, pendingImportInstances, queueImportEdit, sendPendingImportEdits } from '../services/pendingImportEdits.js';
 import { resolveImportIdentity } from '../services/importIdentity.js';
@@ -71,7 +70,7 @@ function cleanPreviewCache() {
 }
 
 function importT(locale: string, key: string, vars?: TranslationVars) {
-  return translate(locale || 'es', key, vars);
+  return translate(locale || DEFAULT_LOCALE, key, vars);
 }
 
 function normalizeHeader(header: unknown) {
@@ -236,7 +235,7 @@ function extractChanges(userId: number, rows: ImportRow[], columnMap: ColumnMap,
 }
 
 
-function getImportSyncState(userId: number, locale = 'es') {
+function getImportSyncState(userId: number, locale: string = DEFAULT_LOCALE) {
   if (!importSyncStates.has(userId)) {
     importSyncStates.set(userId, createIdleImportSyncState({
       locale,

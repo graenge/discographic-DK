@@ -6,11 +6,12 @@ import { api } from '../lib/api';
 import { getErrorMessage } from '../lib/errors';
 import { formatCurrency } from '../lib/format';
 import { useI18n } from '../lib/I18nContext';
+import { getIntlLocale } from '../../shared/i18n.js';
 import { useToast } from '../lib/ToastContext';
 import Icon from './Icon';
 
 function formatDay(date: string, locale: string) {
-  return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'es-ES', { day: 'numeric', month: 'short' }).format(new Date(`${date}T00:00:00Z`));
+  return new Intl.DateTimeFormat(getIntlLocale(locale), { day: 'numeric', month: 'short' }).format(new Date(`${date}T00:00:00Z`));
 }
 
 function CollectionValuePanel({ value, onUpdated }: { value: DashboardCollectionValue; onUpdated: () => void }) {
@@ -86,7 +87,7 @@ function CollectionValuePanel({ value, onUpdated }: { value: DashboardCollection
                 </linearGradient>
               </defs>
               <XAxis dataKey="date" stroke="#78716c" tickLine={false} axisLine={false} tickFormatter={(date: string) => formatDay(date, locale)} fontSize={11} />
-              <YAxis stroke="#78716c" tickLine={false} axisLine={false} width={70} fontSize={11} tickFormatter={(amount: number) => new Intl.NumberFormat(locale === 'en' ? 'en-GB' : 'es-ES', { style: 'currency', currency, notation: 'compact', maximumFractionDigits: 1 }).format(amount)} domain={['auto', 'auto']} />
+              <YAxis stroke="#78716c" tickLine={false} axisLine={false} width={70} fontSize={11} tickFormatter={(amount: number) => new Intl.NumberFormat(getIntlLocale(locale), { style: 'currency', currency, notation: 'compact', maximumFractionDigits: 1 }).format(amount)} domain={['auto', 'auto']} />
               <Tooltip
                 formatter={(amount) => money(Number(amount))}
                 labelFormatter={(date) => formatDay(String(date), locale)}

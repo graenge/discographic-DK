@@ -11,7 +11,7 @@ import {
 describe('sync status contract', () => {
   it('normalizes idle sync status with nested workflow defaults', () => {
     expect(normalizeSyncStatus()).toEqual({
-      locale: 'es',
+      locale: 'da',
       status: 'idle',
       phase: 'idle',
       current: 0,

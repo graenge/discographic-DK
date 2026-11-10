@@ -186,7 +186,7 @@ function AdminPanel() {
       <form onSubmit={handleCreate} className="flex flex-col gap-3 rounded-2xl border border-white/5 bg-white/5 p-4 sm:flex-row sm:items-end">
         <label className="flex-1 space-y-1 text-sm text-slate-300">
           <span>{t('settings.newUser')}</span>
-          <input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder="nombre" className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-hidden focus:border-brand-300" />
+          <input value={newUsername} onChange={(e) => setNewUsername(e.target.value)} placeholder={t('login.username')} className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-hidden focus:border-brand-300" />
         </label>
         <label className="flex-1 space-y-1 text-sm text-slate-300">
           <span>{t('login.password')}</span>

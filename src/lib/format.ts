@@ -1,11 +1,11 @@
-import { getCurrentLocale } from '../../shared/i18n.js';
+import { getCurrentLocale, getIntlLocale } from '../../shared/i18n.js';
 import { DEFAULT_DISPLAY_CURRENCY } from '../../shared/currency.js';
 
 export type NameEntry = string | { name?: string | null } | null | undefined;
 
 export function formatCurrency(value: number | string | null | undefined, currency: string = DEFAULT_DISPLAY_CURRENCY) {
   const locale = getCurrentLocale();
-  const numberLocale = currency === 'DKK' ? 'da-DK' : locale === 'en' ? 'en-GB' : 'es-ES';
+  const numberLocale = currency === 'DKK' ? 'da-DK' : getIntlLocale(locale);
   return new Intl.NumberFormat(numberLocale, {
     style: 'currency',
     currency,
@@ -35,7 +35,7 @@ export function formatDate(value: string | null | undefined) {
   }
 
   const locale = getCurrentLocale();
-  return new Intl.DateTimeFormat(locale === 'en' ? 'en-GB' : 'es-ES', {
+  return new Intl.DateTimeFormat(getIntlLocale(locale), {
     dateStyle: 'medium',
     timeStyle: 'short'
   }).format(date);
@@ -43,12 +43,12 @@ export function formatDate(value: string | null | undefined) {
 
 export function formatCompactNumber(value: number | null | undefined) {
   const locale = getCurrentLocale();
-  return new Intl.NumberFormat(locale === 'en' ? 'en-GB' : 'es-ES', { notation: 'compact', maximumFractionDigits: 1 }).format(Number(value || 0));
+  return new Intl.NumberFormat(getIntlLocale(locale), { notation: 'compact', maximumFractionDigits: 1 }).format(Number(value || 0));
 }
 
 export function formatNumber(value: number | string | null | undefined) {
   const locale = getCurrentLocale();
-  return new Intl.NumberFormat(locale === 'en' ? 'en-GB' : 'es-ES').format(Number(value || 0));
+  return new Intl.NumberFormat(getIntlLocale(locale)).format(Number(value || 0));
 }
 
 export function joinNames(list: unknown[] | null | undefined, pick: (item: unknown) => string | null | undefined = (item) => {

@@ -1,4 +1,5 @@
 import { toBlob, toJpeg } from 'html-to-image';
+import { getCurrentLocale, translate } from '../../shared/i18n.js';
 
 type ExportOptions = {
   quality?: number;
@@ -59,7 +60,7 @@ async function createBlob(node: HTMLElement, options: ExportOptions = {}): Promi
     });
 
     if (!blob) {
-      throw new Error('No se pudo generar la imagen');
+      throw new Error(translate(getCurrentLocale(), 'client.imageGenerationFailed'));
     }
 
     return blob;

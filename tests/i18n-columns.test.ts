@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { messages } from '../shared/i18n.js';
+import { DEFAULT_LOCALE, messages, resolveLocale } from '../shared/i18n.js';
 
 const { COLUMNS } = await import('../src/lib/columns.js') as {
   COLUMNS: Array<{
@@ -525,5 +525,25 @@ describe('i18n keys for import/media/client fallbacks', () => {
     expect(messages.en['dashboard.coverageSubtitle']).toBe('See how much of your collection is documented and which records still need ratings, notes, or market data.');
     expect(messages.es['dashboard.coverageSubtitle']).not.toMatch(/rehecho/i);
     expect(messages.en['dashboard.coverageSubtitle']).not.toMatch(/rebuilt/i);
+  });
+});
+
+describe('Danish locale', () => {
+  it('is the default while preserving explicit English and Spanish preferences', () => {
+    expect(DEFAULT_LOCALE).toBe('da');
+    expect(resolveLocale('da-DK')).toBe('da');
+    expect(resolveLocale('en-GB')).toBe('en');
+    expect(resolveLocale('es-ES')).toBe('es');
+    expect(messages.da['nav.collection']).toBe('Samling');
+    expect(messages.da['language.da']).toBe('Dansk');
+  });
+
+  it('has Danish copy and matching interpolation variables for every English message', () => {
+    expect(Object.keys(messages.da).sort()).toEqual(Object.keys(messages.en).sort());
+    for (const key of Object.keys(messages.en)) {
+      const englishVariables = messages.en[key].match(/\{\w+\}/g) ?? [];
+      const danishVariables = messages.da[key].match(/\{\w+\}/g) ?? [];
+      expect(danishVariables.sort(), `Interpolation variables differ for ${key}`).toEqual(englishVariables.sort());
+    }
   });
 });

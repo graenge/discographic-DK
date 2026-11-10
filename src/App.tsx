@@ -77,6 +77,7 @@ function AppLayoutFrame() {
             <select value={locale} onChange={(event) => setLocale(event.target.value)} className="bg-transparent text-sm text-slate-100 outline-hidden">
               <option value="es" className="bg-slate-950">{t('language.es')}</option>
               <option value="en" className="bg-slate-950">{t('language.en')}</option>
+              <option value="da" className="bg-slate-950">{t('language.da')}</option>
             </select>
           </label>
           <div className="flex items-center justify-between gap-2 px-1">
@@ -105,6 +106,7 @@ function AppLayoutFrame() {
           >
             <option value="es" className="bg-slate-950">ES</option>
             <option value="en" className="bg-slate-950">EN</option>
+            <option value="da" className="bg-slate-950">DA</option>
           </select>
           <button type="button" onClick={logout} className="icon-button" aria-label={t('app.logout')} title={t('app.logout')}>
             <Icon name="logout" size={17} />

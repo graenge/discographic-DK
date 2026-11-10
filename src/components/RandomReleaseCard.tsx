@@ -17,9 +17,11 @@ function RandomReleaseCard() {
   const [spinning, setSpinning] = useState(false);
   const [shuffleLabel, setShuffleLabel] = useState('');
 
-  const shuffleWords = locale === 'en'
-    ? ['Looking for a gem...', 'Digging through crates...', 'Spinning the platter...', 'Pulling a sleeve...']
-    : ['Buscando joya...', 'Revolviendo cajas...', 'Girando plato...', 'Sacando funda...'];
+  const shuffleWords = locale === 'da'
+    ? ['Leder efter en perle…', 'Graver i pladekasserne…', 'Sætter pladen på…', 'Trækker et omslag frem…']
+    : locale === 'en'
+      ? ['Looking for a gem...', 'Digging through crates...', 'Spinning the platter...', 'Pulling a sleeve...']
+      : ['Buscando joya...', 'Revolviendo cajas...', 'Girando plato...', 'Sacando funda...'];
 
   async function pullRandom() {
     setLoading(true);

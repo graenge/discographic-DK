@@ -61,6 +61,7 @@ function Setup() {
             <select value={locale} onChange={(event) => setLocale(event.target.value)} className="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm text-slate-200 outline-hidden">
               <option value="es" className="bg-slate-950">{t('language.es')}</option>
               <option value="en" className="bg-slate-950">{t('language.en')}</option>
+              <option value="da" className="bg-slate-950">{t('language.da')}</option>
             </select>
           </div>
           <h1 className="mt-3 font-display text-4xl text-white">{t('setup.title')}</h1>

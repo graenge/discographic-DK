@@ -1,4 +1,4 @@
-import { LOCALE_STORAGE_KEY, resolveLocale, translate } from '../../shared/i18n.js';
+import { getCurrentLocale, translate } from '../../shared/i18n.js';
 import {
   normalizeAccountResponse,
   normalizeAuthStatus,
@@ -61,11 +61,7 @@ import type {
 const API_BASE = '/api';
 
 function getLocaleHeader() {
-  if (typeof window === 'undefined') {
-    return 'es';
-  }
-
-  return resolveLocale(window.localStorage.getItem(LOCALE_STORAGE_KEY) || window.navigator.language || 'es');
+  return getCurrentLocale();
 }
 
 type RequestOptions = RequestInit & {

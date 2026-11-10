@@ -115,7 +115,7 @@ describe('shared contract types', () => {
     expect(radarWantlistPreview.summary.validRows).toBe(1);
     expect(radarWantlistApply.result.imported).toBe(1);
     expect(radarUpdateRun.phase).toBe('idle');
-    expect(syncStatus.locale).toBe('es');
+    expect(syncStatus.locale).toBe('da');
     expect(importSyncState.status).toBe('idle');
     expect(locale).toBe('en');
 
@@ -130,6 +130,6 @@ describe('shared contract types', () => {
     expectTypeOf(radarUpdateRun).toMatchTypeOf<RadarUpdateRunStatus>();
     expectTypeOf(syncStatus).toMatchTypeOf<SyncStatusState>();
     expectTypeOf(importSyncState).toMatchTypeOf<ImportSyncState>();
-    expectTypeOf({ en: {}, es: {} }).toMatchTypeOf<MessagesByLocale>();
+    expectTypeOf({ da: {}, en: {}, es: {} }).toMatchTypeOf<MessagesByLocale>();
   });
 });
