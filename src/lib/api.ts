@@ -111,6 +111,7 @@ type RawAccountUpdateResponse = AccountResponse & {
 type RawCollectionResponse = {
   releases: CollectionRelease[];
   displayCurrency: string | null;
+  summary: CollectionPageResponse['summary'];
   pagination: CollectionPageResponse['pagination'];
   filters: CollectionFilterOptions;
 };
@@ -218,6 +219,10 @@ export const api = {
     const normalized = normalizeCollectionResponse(response);
     return {
       ...normalized,
+      summary: {
+        pricedCount: Number(response.summary?.pricedCount) || 0,
+        totalMinimumPrice: Number(response.summary?.totalMinimumPrice) || 0,
+      },
       filters: response.filters,
     };
   },

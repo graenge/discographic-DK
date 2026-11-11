@@ -125,6 +125,10 @@ function createCollectionResponse(
   return {
     releases: [createRelease({ id: page, title, display_currency: displayCurrency })],
     displayCurrency,
+    summary: {
+      pricedCount: 1,
+      totalMinimumPrice: 12.34,
+    },
     pagination: {
       page,
       limit: 20,

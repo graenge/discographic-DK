@@ -14,7 +14,7 @@ import { useAuth } from '../lib/AuthContext';
 import { DEFAULT_VISIBLE, COLUMNS, type ColumnId } from '../lib/columns';
 import { buildCollectionTableVisibleColumns, COLLECTION_PAGE_LIMIT } from '../lib/collectionTableState';
 import { getErrorMessage } from '../lib/errors';
-import { formatNumber } from '../lib/format';
+import { formatCurrency, formatNumber } from '../lib/format';
 import { useI18n } from '../lib/I18nContext';
 import { useToast } from '../lib/ToastContext';
 import { applyOptimisticReleasePatch } from '../lib/releaseEdits';
@@ -110,6 +110,10 @@ function Collection() {
   const [payload, setPayload] = useState<CollectionPageResponse>({
     releases: [],
     displayCurrency: DEFAULT_DISPLAY_CURRENCY,
+    summary: {
+      pricedCount: 0,
+      totalMinimumPrice: 0,
+    },
     pagination: {
       page: 1,
       limit: 20,
@@ -470,6 +474,19 @@ function Collection() {
           </Link>
         </div>
       </header>
+
+      <section className="glass-panel flex flex-col gap-3 border-brand-300/15 bg-brand-400/5 px-5 py-4 sm:flex-row sm:items-center sm:justify-between" aria-live="polite" aria-busy={loading}>
+        <div>
+          <p className="text-xs uppercase tracking-[0.14em] text-brand-200">{t('collection.minimumPriceTotal')}</p>
+          <p className="mt-1 text-sm text-slate-300">{loading ? t('collection.minimumPriceLoading') : t('collection.minimumPriceSummary', {
+            count: formatNumber(payload.pagination.total),
+            priced: formatNumber(payload.summary.pricedCount),
+          })}</p>
+        </div>
+        <p className="font-display text-3xl font-semibold tabular-nums text-brand-100">
+          {loading ? '…' : formatCurrency(payload.summary.totalMinimumPrice, displayCurrency)}
+        </p>
+      </section>
 
       {importOpen ? (
         <section className="glass-panel p-5">

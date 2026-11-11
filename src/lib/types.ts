@@ -134,6 +134,10 @@ export type CommunityRefreshStatus = {
 export type CollectionPageResponse = {
   releases: CollectionRelease[];
   displayCurrency: string | null;
+  summary: {
+    pricedCount: number;
+    totalMinimumPrice: number;
+  };
   pagination: {
     page: number;
     limit: number;

@@ -186,6 +186,21 @@ router.get('/', async (req, res) => {
     });
 
     const total = db.prepare<unknown[], { count: number }>(`SELECT COUNT(*) AS count FROM releases ${clause}`).get(...params)!.count;
+    const priceSummary = db.prepare<unknown[], { pricedCount: number; totalMinimumPriceEur: number }>(`
+      SELECT
+        COUNT(CASE WHEN marketplace_status = ? AND estimated_value IS NOT NULL AND estimated_value > 0 THEN 1 END) AS pricedCount,
+        COALESCE(SUM(CASE WHEN marketplace_status = ? AND estimated_value IS NOT NULL AND estimated_value > 0 THEN estimated_value ELSE 0 END), 0) AS totalMinimumPriceEur
+      FROM releases
+      ${clause}
+    `).get(MARKETPLACE_STATUS.PRICED, MARKETPLACE_STATUS.PRICED, ...params)!;
+    const displayCurrency = getDisplayCurrency(req);
+    const exchangeSnapshot = await getExchangeSnapshot();
+    const totalMinimumPrice = convertAmountWithRates(
+      priceSummary.totalMinimumPriceEur,
+      DEFAULT_CURRENCY,
+      displayCurrency,
+      exchangeSnapshot.rates
+    ) ?? 0;
     const rawReleases = db.prepare<unknown[], ReleaseRow>(`
       SELECT ${BASE_FIELDS}
       FROM releases
@@ -197,7 +212,11 @@ router.get('/', async (req, res) => {
 
     res.json({
       releases,
-      displayCurrency: getDisplayCurrency(req),
+      displayCurrency,
+      summary: {
+        pricedCount: priceSummary.pricedCount,
+        totalMinimumPrice,
+      },
       pagination: {
         page,
         limit,
