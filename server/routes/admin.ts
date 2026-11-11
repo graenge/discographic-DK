@@ -2,7 +2,7 @@ import { record } from '../discogsPagination.js';
 import { errorMessage } from '../services/errors.js';
 import bcrypt from 'bcryptjs';
 import express from 'express';
-import { createUser, deleteUser, getUserById, listUsers, updateUserPasswordHash } from '../db.js';
+import { createUser, deleteUser, getUserById, listUsers, updateUserPasswordHash, updateUserUsername } from '../db.js';
 import { requireAdmin } from '../middleware/auth.js';
 
 const router = express.Router();
@@ -37,6 +37,30 @@ router.post('/users', async (req, res) => {
     const passwordHash = await bcrypt.hash(password, 12);
     const user = createUser(username, passwordHash);
     return res.json({ ok: true, user });
+  } catch (error) {
+    if (errorMessage(error)?.includes('UNIQUE')) {
+      return res.status(409).json({ error: req.t('backend.admin.usernameExists') });
+    }
+    return res.status(500).json({ error: errorMessage(error) });
+  }
+});
+
+router.put('/users/:id/username', (req, res) => {
+  const body = record(req.body) ?? {};
+  const targetId = Number(req.params.id);
+  const username = String(body.username || '').trim();
+
+  if (username.length < 3) {
+    return res.status(400).json({ error: req.t('backend.admin.usernameLength') });
+  }
+
+  if (!getUserById(targetId)) {
+    return res.status(404).json({ error: req.t('backend.admin.userNotFound') });
+  }
+
+  try {
+    updateUserUsername(targetId, username);
+    return res.json({ ok: true, message: req.t('backend.admin.usernameUpdated', { username }) });
   } catch (error) {
     if (errorMessage(error)?.includes('UNIQUE')) {
       return res.status(409).json({ error: req.t('backend.admin.usernameExists') });

@@ -20,7 +20,10 @@ function AdminPanel() {
   const [resetPassword, setResetPassword] = useState('');
   const [resetPasswordConfirm, setResetPasswordConfirm] = useState('');
   const [resetting, setResetting] = useState(false);
-  const { user: currentUser } = useAuth();
+  const [editingUsernameId, setEditingUsernameId] = useState<number | null>(null);
+  const [editUsername, setEditUsername] = useState('');
+  const [renaming, setRenaming] = useState(false);
+  const { user: currentUser, refreshAccount } = useAuth();
 
   async function loadUsers() {
     try {
@@ -92,6 +95,7 @@ function AdminPanel() {
 
   function startReset(userId: number) {
     setAdminError('');
+    cancelRename();
     setResetUserId(userId);
     setResetPassword('');
     setResetPasswordConfirm('');
@@ -101,6 +105,43 @@ function AdminPanel() {
     setResetUserId(null);
     setResetPassword('');
     setResetPasswordConfirm('');
+  }
+
+  function startRename(user: NormalizedUser) {
+    setAdminError('');
+    cancelReset();
+    setEditingUsernameId(user.id);
+    setEditUsername(user.username);
+  }
+
+  function cancelRename() {
+    setEditingUsernameId(null);
+    setEditUsername('');
+  }
+
+  async function handleRename(event: FormEvent<HTMLFormElement>, user: NormalizedUser) {
+    event.preventDefault();
+    const username = editUsername.trim();
+    if (username === user.username) {
+      cancelRename();
+      return;
+    }
+
+    setRenaming(true);
+    setAdminError('');
+    try {
+      const result = await api.renameUser(user.id, { username });
+      cancelRename();
+      if (user.id === currentUser?.id) {
+        await refreshAccount();
+      }
+      toast.success(result.message || t('settings.usernameChanged', { username }));
+      await loadUsers();
+    } catch (error) {
+      setAdminError(getErrorMessage(error, t('client.networkError')));
+    } finally {
+      setRenaming(false);
+    }
   }
 
   return (
@@ -132,28 +173,57 @@ function AdminPanel() {
                   </td>
                   <td className="px-4 py-3 text-slate-400">{formatDate(user.created_at)}</td>
                   <td className="px-4 py-3 text-right">
-                    {user.id !== currentUser?.id ? (
-                      <div className="flex justify-end gap-4">
-                        <button
-                          type="button"
-                          onClick={() => startReset(user.id)}
-                          className="text-sm text-brand-200 transition hover:text-brand-100"
-                        >
-                          {t('settings.resetPassword')}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => handleDelete(user.id, user.username)}
-                          className="text-sm text-rose-300 transition hover:text-rose-100"
-                        >
-                          {t('settings.delete')}
-                        </button>
-                      </div>
-                    ) : (
-                      <span className="text-sm text-slate-500">{t('settings.you')}</span>
-                    )}
+                    <div className="flex flex-wrap items-center justify-end gap-4">
+                      {user.id === currentUser?.id ? (
+                        <span className="text-sm text-slate-500">{t('settings.you')}</span>
+                      ) : null}
+                      <button
+                        type="button"
+                        onClick={() => startRename(user)}
+                        className="text-sm text-brand-200 transition hover:text-brand-100"
+                      >
+                        {t('settings.renameUsername')}
+                      </button>
+                      {user.id !== currentUser?.id ? (
+                        <>
+                          <button
+                            type="button"
+                            onClick={() => startReset(user.id)}
+                            className="text-sm text-brand-200 transition hover:text-brand-100"
+                          >
+                            {t('settings.resetPassword')}
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => handleDelete(user.id, user.username)}
+                            className="text-sm text-rose-300 transition hover:text-rose-100"
+                          >
+                            {t('settings.delete')}
+                          </button>
+                        </>
+                      ) : null}
+                    </div>
                   </td>
                 </tr>
+
+                {editingUsernameId === user.id ? (
+                  <tr className="border-t border-white/5 bg-white/5">
+                    <td colSpan={4} className="px-4 py-4">
+                      <form onSubmit={(event) => handleRename(event, user)} className="grid gap-3 md:grid-cols-[1fr_auto_auto] md:items-end">
+                        <label className="space-y-1 text-sm text-slate-300">
+                          <span>{t('settings.renameUsername')}</span>
+                          <input autoFocus value={editUsername} onChange={(event) => setEditUsername(event.target.value)} className="w-full rounded-2xl border border-white/10 bg-slate-950/60 px-4 py-3 outline-hidden focus:border-brand-300" />
+                        </label>
+                        <button type="submit" disabled={renaming} className="primary-button disabled:opacity-60">
+                          {renaming ? t('settings.saving') : t('settings.saveUsername')}
+                        </button>
+                        <button type="button" onClick={cancelRename} className="secondary-button">
+                          {t('settings.cancel')}
+                        </button>
+                      </form>
+                    </td>
+                  </tr>
+                ) : null}
 
                 {resetUserId === user.id ? (
                   <tr className="border-t border-white/5 bg-white/5">

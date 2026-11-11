@@ -248,6 +248,7 @@ export const api = {
   getSyncStatus: async (): Promise<SyncStatusState> => normalizeSyncStatus(await request('/sync/status')),
   listUsers: (): Promise<UserListResponse> => request('/admin/users'),
   createUser: (payload: AdminUserPayload): Promise<{ ok: boolean; user: NormalizedUser | null }> => request('/admin/users', { method: 'POST', body: JSON.stringify(payload) }),
+  renameUser: (id: number, payload: { username: string }): Promise<MessageResponse> => request(`/admin/users/${id}/username`, { method: 'PUT', body: JSON.stringify(payload) }),
   deleteUser: (id: number): Promise<MessageResponse> => request(`/admin/users/${id}`, { method: 'DELETE' }),
   resetUserPassword: (id: number, payload: AdminResetPasswordPayload): Promise<MessageResponse> => request(`/admin/users/${id}/password`, { method: 'PUT', body: JSON.stringify(payload) }),
   importPreview: (file: File): Promise<ImportPreviewResponse> => {

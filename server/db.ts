@@ -145,6 +145,11 @@ export function createUser(username: string, passwordHash: string, role = 'user'
   return getUserById(Number(info.lastInsertRowid))!;
 }
 
+export function updateUserUsername(id: number, username: string) {
+  const result = db.prepare('UPDATE users SET username = ? WHERE id = ?').run(username, id);
+  return result.changes ? getUserById(id) : null;
+}
+
 export function listUsers() {
   return db.prepare<[], Omit<UserRow, 'auth_epoch'>>('SELECT id, username, role, created_at FROM users ORDER BY id ASC').all();
 }

@@ -112,6 +112,41 @@ describe('persistent cookie session revocation through production routes', () =>
     expect((await request('/api/account', 'GET', undefined, cookieFrom(freshLogin))).status).toBe(200);
   });
 
+  it('renames the administrator without replacing the user or revoking the current session', async () => {
+    const adminCookie = await login('administrator');
+    db.prepare('INSERT INTO settings (user_id, key, value) VALUES (?, ?, ?)').run(adminId, 'currency', 'DKK');
+
+    const renamed = await request(`/api/admin/users/${adminId}/username`, 'PUT', { username: 'collection-admin' }, adminCookie);
+    expect(renamed.status).toBe(200);
+    expect(await renamed.json()).toMatchObject({ ok: true, message: 'backend.admin.usernameUpdated' });
+    expect(db.prepare('SELECT id, username, role, auth_epoch FROM users WHERE id = ?').get(adminId)).toEqual({
+      id: adminId,
+      username: 'collection-admin',
+      role: 'admin',
+      auth_epoch: 0
+    });
+    expect(db.prepare('SELECT value FROM settings WHERE user_id = ? AND key = ?').get(adminId, 'currency')).toEqual({ value: 'DKK' });
+    expect((await request('/api/admin/users', 'GET', undefined, adminCookie)).status).toBe(200);
+    expect(await (await request('/api/auth/status', 'GET', undefined, adminCookie)).json()).toMatchObject({
+      loggedIn: true,
+      user: { id: adminId, username: 'collection-admin', role: 'admin' }
+    });
+    expect((await request('/api/auth/login', 'POST', { username: 'administrator', password })).status).toBe(401);
+    expect((await request('/api/auth/login', 'POST', { username: 'collection-admin', password })).status).toBe(200);
+  });
+
+  it('rejects short or already used usernames when renaming a user', async () => {
+    const adminCookie = await login('administrator');
+    const tooShort = await request(`/api/admin/users/${adminId}/username`, 'PUT', { username: 'ab' }, adminCookie);
+    expect(tooShort.status).toBe(400);
+    expect(await tooShort.json()).toMatchObject({ error: 'backend.admin.usernameLength' });
+
+    const duplicate = await request(`/api/admin/users/${adminId}/username`, 'PUT', { username: 'collector' }, adminCookie);
+    expect(duplicate.status).toBe(409);
+    expect(await duplicate.json()).toMatchObject({ error: 'backend.admin.usernameExists' });
+    expect(getUserAuthById(adminId)?.username).toBe('administrator');
+  });
+
   it('rejects account reads from a deleted user cookie', async () => {
     const cookie = await login();
     const adminCookie = await login('administrator');
