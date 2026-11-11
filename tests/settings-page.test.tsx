@@ -46,6 +46,13 @@ vi.mock('../src/lib/ToastContext', () => ({
   }),
 }));
 
+vi.mock('../src/lib/ThemeContext', () => ({
+  useTheme: () => ({
+    themePreference: 'system',
+    setThemePreference: vi.fn(),
+  }),
+}));
+
 vi.mock('../src/lib/api', () => ({
   api: {
     getAccount,

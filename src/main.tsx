@@ -4,6 +4,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router';
 import App from './App';
 import { AuthProvider } from './lib/AuthContext';
 import { I18nProvider } from './lib/I18nContext';
+import { ThemeProvider } from './lib/ThemeContext';
 import { ToastProvider } from './lib/ToastContext';
 import './index.css';
 
@@ -20,11 +21,13 @@ const router = createBrowserRouter([
     path: '*',
     element: (
       <I18nProvider>
-        <ToastProvider>
-          <AuthProvider>
-            <App />
-          </AuthProvider>
-        </ToastProvider>
+        <ThemeProvider>
+          <ToastProvider>
+            <AuthProvider>
+              <App />
+            </AuthProvider>
+          </ToastProvider>
+        </ThemeProvider>
       </I18nProvider>
     ),
   },

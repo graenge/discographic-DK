@@ -1,17 +1,23 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react';
 import { api } from './api';
+import { isThemePreference, useTheme } from './ThemeContext';
 import { normalizeAccountState, normalizeAuthStatus, type AccountState, type AuthStatus } from '../../shared/contracts/account.js';
 import type { AuthContextValue, AuthMutationResponse, ChildrenProp } from './types';
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: ChildrenProp) {
+  const { setThemePreference } = useTheme();
   const [loading, setLoading] = useState(true);
   const [accountState, setAccountState] = useState(() => normalizeAccountState());
 
   async function refreshAccountState(auth: AuthStatus | AccountState = accountState): Promise<AccountState> {
     try {
       const account = await api.getAccount();
+      const savedTheme = await api.getPreference('theme').catch(() => null);
+      if (isThemePreference(savedTheme?.value)) {
+        setThemePreference(savedTheme.value);
+      }
       const nextState = normalizeAccountState({ auth, account });
       setAccountState(nextState);
       return nextState;
@@ -30,6 +36,7 @@ export function AuthProvider({ children }: ChildrenProp) {
       if (status.loggedIn) {
         await refreshAccountState(status).catch(() => null);
       } else {
+        setThemePreference('system');
         setAccountState(normalizeAccountState({ auth: status }));
       }
     } catch {
@@ -71,6 +78,7 @@ export function AuthProvider({ children }: ChildrenProp) {
     },
     async logout() {
       await api.logout();
+      setThemePreference('system');
       await refresh();
     },
     async refreshAccount() {
@@ -91,7 +99,7 @@ export function AuthProvider({ children }: ChildrenProp) {
       return nextState.preferences.currency;
     },
     refresh
-  }), [loading, accountState]);
+  }), [loading, accountState, setThemePreference]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

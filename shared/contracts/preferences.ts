@@ -7,4 +7,5 @@ export const USER_PREFERENCE_KEYS = Object.freeze([
   'collection_visible_columns',
   'collection_view_mode',
   'currency',
+  'theme',
 ]);

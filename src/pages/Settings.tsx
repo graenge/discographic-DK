@@ -6,6 +6,7 @@ import { getErrorMessage } from '../lib/errors';
 import { useI18n } from '../lib/I18nContext';
 import { formatDate } from '../lib/format';
 import { useToast } from '../lib/ToastContext';
+import { useTheme, type ThemePreference } from '../lib/ThemeContext';
 import type { NormalizedUser } from '../../shared/contracts/account.js';
 
 function AdminPanel() {
@@ -342,6 +343,7 @@ function Settings() {
   const toast = useToast();
   const { t } = useI18n();
   const { logout, refreshAccount, isAdmin } = useAuth();
+  const { themePreference, setThemePreference } = useTheme();
   const { refresh: refreshDashboardStats } = useDashboardStats();
   const [discogsUsername, setDiscogsUsername] = useState('');
   const [newToken, setNewToken] = useState('');
@@ -349,6 +351,18 @@ function Settings() {
   const [tokenConfigured, setTokenConfigured] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+
+  async function handleThemeChange(nextTheme: ThemePreference) {
+    const previousTheme = themePreference;
+    setThemePreference(nextTheme);
+    try {
+      await api.setPreference('theme', nextTheme);
+      toast.success(t('settings.themeSaved'));
+    } catch (nextError) {
+      setThemePreference(previousTheme);
+      toast.error(getErrorMessage(nextError, t('client.networkError')));
+    }
+  }
 
   async function refreshAccountViews() {
     await Promise.allSettled([refreshAccount(), refreshDashboardStats()]);
@@ -430,6 +444,25 @@ function Settings() {
           {saving ? t('settings.saving') : t('settings.save')}
         </button>
       </form>
+
+      <section className="glass-panel flex flex-col gap-4 p-6 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h3 className="font-display text-2xl text-white">{t('settings.themeTitle')}</h3>
+          <p className="mt-1 text-sm text-slate-400">{t('settings.themeSubtitle')}</p>
+        </div>
+        <label className="block space-y-2 text-sm text-slate-300">
+          <span>{t('settings.themeTitle')}</span>
+          <select
+            value={themePreference}
+            onChange={(event) => handleThemeChange(event.target.value as ThemePreference)}
+            className="field-input sm:min-w-56"
+          >
+            <option value="system">{t('settings.themeSystem')}</option>
+            <option value="light">{t('settings.themeLight')}</option>
+            <option value="dark">{t('settings.themeDark')}</option>
+          </select>
+        </label>
+      </section>
 
       <PasswordPanel />
 
